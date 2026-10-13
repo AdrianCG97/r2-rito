@@ -8,6 +8,10 @@ Build an autonomous omnidirectional mobile robot from the ground up, progressing
 ## High-Level Plan
 
 ### 1) Low-Level Firmware & Control (Yahboom MCU Board)
+  - [ ] Get printf working
+    - [ ] Test basic
+    - [ ] Use DMA and test
+  - [ ] Heartbeat
   - [ ] Implement closed-loop DC motor velocity control (PID) and encoder feedback
   - [ ] Derive and implement 4-wheel omnidirectional kinematic model
     - *Reference:* [Omnidirectional Wheeled Mobile Robots (Modern Robotics)](https://modernrobotics.northwestern.edu/nu-gm-book-resource/13-2-omnidirectional-wheeled-mobile-robots-part-1-of-2/)
@@ -15,6 +19,7 @@ Build an autonomous omnidirectional mobile robot from the ground up, progressing
     - Start with **FreeRTOS** for fast prototyping and motor loop determinism
     - Evaluate migrating to **Zephyr RTOS** for native DeviceTree and modular drivers
   - [ ] Establish host-to-MCU communication interface (UART/USB CDC or CAN using micro-ROS or lightweight packet protocol)
+  - Board info: https://www.yahboom.net/study/ROS-Driver-Board
 
 ### 2) High-Level Compute & ROS 2 Environment
   - [ ] Platform Selection:
@@ -159,3 +164,5 @@ Tasks are ordered strictly by dependency. Complete each phase and verify its mil
   - [ ] Bake the target ROS 2 core packages directly into the root filesystem image via `meta-ros` (or containerized via headless Docker).
   - [ ] Set up systemd services to auto-launch micro-ROS/hardware nodes and sensor drivers on boot.
   - [ ] Implement an A/B partition layout or read-only rootfs with an overlay partition for robust power-loss resilience.
+
+

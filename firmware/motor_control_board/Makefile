@@ -10,7 +10,12 @@ OBJCOPY := $(TOOLCHAIN)arm-none-eabi-objcopy
 SIZE    := $(TOOLCHAIN)arm-none-eabi-size
 
 # Sources
-C_SRCS   := $(wildcard Core/Src/*.c) $(wildcard Drivers/STM32F1xx_HAL_Driver/Src/*.c)
+RTOS     := Middlewares/Third_Party/FreeRTOS/Source
+C_SRCS   := $(wildcard Core/Src/*.c) $(wildcard Drivers/STM32F1xx_HAL_Driver/Src/*.c) \
+            $(wildcard $(RTOS)/*.c) \
+            $(RTOS)/CMSIS_RTOS_V2/cmsis_os2.c \
+            $(RTOS)/portable/MemMang/heap_4.c \
+            $(RTOS)/portable/GCC/ARM_CM3/port.c
 ASM_SRCS := Core/Startup/startup_stm32f103rctx.s
 LDSCRIPT := STM32F103RCTX_FLASH.ld
 
@@ -18,7 +23,10 @@ INCLUDES := -ICore/Inc \
             -IDrivers/STM32F1xx_HAL_Driver/Inc \
             -IDrivers/STM32F1xx_HAL_Driver/Inc/Legacy \
             -IDrivers/CMSIS/Device/ST/STM32F1xx/Include \
-            -IDrivers/CMSIS/Include
+            -IDrivers/CMSIS/Include \
+            -I$(RTOS)/include \
+            -I$(RTOS)/CMSIS_RTOS_V2 \
+            -I$(RTOS)/portable/GCC/ARM_CM3
 DEFINES  := -DUSE_HAL_DRIVER -DSTM32F103xE
 
 # Flags
@@ -29,7 +37,7 @@ CFLAGS  := $(MCU) -std=gnu11 $(OPT) $(DEFINES) $(INCLUDES) \
 ASFLAGS := $(MCU) -g3 -x assembler-with-cpp --specs=nano.specs -MMD -MP
 LDFLAGS := $(MCU) -T$(LDSCRIPT) --specs=nosys.specs --specs=nano.specs -static \
            -Wl,-Map=$(BUILD)/$(TARGET).map -Wl,--gc-sections \
-           -Wl,--start-group -lc -lm -Wl,--end-group
+           -Wl,--start-group -lc -lm -Wl,--end-group -u _printf_float
 
 OBJS := $(C_SRCS:%.c=$(BUILD)/%.o) $(ASM_SRCS:%.s=$(BUILD)/%.o)
 
